@@ -10,6 +10,9 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class PolicyHandler{
+
+    @Autowired
+    DeliveryRepository deliveryRepository;
     
     @StreamListener(KafkaProcessor.INPUT)
     public void wheneverOrdered_Ship(@Payload Ordered ordered){
@@ -18,7 +21,9 @@ public class PolicyHandler{
              Delivery delivery = new Delivery();
              delivery.setOrderId(ordered.getId());
              delivery.setStatus("SHIPPED");
-            
+
+            deliveryRepository.save(delivery);
+
             System.out.println("##### listener Ship : " + ordered.toJson());
         }
     }
